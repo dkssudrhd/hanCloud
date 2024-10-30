@@ -1,0 +1,27 @@
+spring:
+    application:
+        name: hanCloud
+
+    jpa:
+      open-in-view: false
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+          use_sql_comments: true
+          highlight_sql: true
+          auto_quote_keyword: true
+
+    datasource:
+      url: jdbc:mariadb://121.179.140.28:3306/${DATABASE_NAME}
+      username: ${DATABASE_USER}
+      password: ${DATABASE_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      type: org.apache.commons.dbcp2.BasicDataSource
+      dbcp2:
+        initial-size: 10
+        max-total: 10
+        max-idle: 10
+        min-idle: 10
+        test-on-borrow: true
+        validation-query: SELECT 1
