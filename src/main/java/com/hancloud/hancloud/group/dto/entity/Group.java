@@ -1,7 +1,6 @@
 package com.hancloud.hancloud.group.dto.entity;
 
 import com.hancloud.hancloud.member.dto.entity.ApiMember;
-import com.hancloud.hancloud.member.dto.entity.Member;
 import com.hancloud.hancloud.storage.dto.entity.HanStorage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
