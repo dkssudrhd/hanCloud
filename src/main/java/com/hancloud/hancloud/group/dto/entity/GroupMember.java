@@ -12,6 +12,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"api_member_id", "group_id"})
+        }
+)
 public class GroupMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
