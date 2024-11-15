@@ -1,10 +1,8 @@
 package com.hancloud.hancloud.storage.dto.entity;
 
+import com.hancloud.hancloud.group.dto.entity.Group;
 import com.hancloud.hancloud.storage.dto.enums.StorageAuth;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,4 +21,7 @@ public class HanStorage {
     @UniqueElements
     String path;
     StorageAuth auth;
+
+    @ManyToOne
+    private Group group;
 }

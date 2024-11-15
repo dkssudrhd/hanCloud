@@ -1,6 +1,6 @@
 package com.hancloud.hancloud.member.dto.entity;
 
-import com.hancloud.hancloud.group.dto.entity.Group;
+import com.hancloud.hancloud.group.dto.entity.GroupMember;
 import com.hancloud.hancloud.member.dto.enums.MemberAuth;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,5 +29,5 @@ public class ApiMember {
     Member member;
 
     @OneToMany(mappedBy = "apiMember")
-    List<Group> groupList = new ArrayList<>();
+    List<GroupMember> groupMemberList = new ArrayList<>();
 }
