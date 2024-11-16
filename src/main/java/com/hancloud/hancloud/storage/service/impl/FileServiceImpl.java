@@ -90,6 +90,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
     public Resource loadFileAsResource(String filePath) {
         Path uploadPath = Paths.get(DEFAULT_FILE_PATH);
         try {

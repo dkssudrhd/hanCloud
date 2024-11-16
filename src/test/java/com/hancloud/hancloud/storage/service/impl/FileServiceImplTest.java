@@ -3,7 +3,9 @@ package com.hancloud.hancloud.storage.service.impl;
 import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.service.FileService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +25,12 @@ class FileServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        fileService = new FileServiceImpl(); // 실제 구현체 사용 또는 Mock으로 변경 가능
+        fileService = new FileServiceImpl();
     }
 
 
     @Test
+    @DisplayName("파일 저장")
     void realStorage_success() throws IOException {
         File file = new File("storageTest/kafka.png");
         FileInputStream inputStream = new FileInputStream(file);
@@ -42,9 +45,10 @@ class FileServiceImplTest {
     }
 
     @Test
+    @DisplayName("파일 경로가 잘못될 경우")
     void testStorage_invalidPath() {
         // Given
-        String invalidFilePath = "invalid_path/?<>*"; // 유효하지 않은 파일 경로
+        String invalidFilePath = "invalid_path/?<>*";
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file",
                 "testFile.txt",
@@ -52,14 +56,23 @@ class FileServiceImplTest {
                 "content".getBytes()
         );
 
-        // When & Then
         assertThrows(RuntimeException.class, () -> fileService.storage(mockFile, invalidFilePath));
     }
 
     @Test
+    @DisplayName("파일 이름 중복 확인")
     void testFileNameDuplicationCheck(){
         String fileName = "storage/dkssudrhd/kafka.png";
         Path path = Paths.get(fileName);
         assertThrows(FileNameDuplicationException.class, ()-> fileService.fileNameDuplicationCheck(path));
+    }
+
+    @Test
+    @DisplayName("파일 로딩 확인")
+    void testLoadFileAsResource(){
+        String fileName = "dkssudrhd/kafka.png";
+        Resource resource = fileService.loadFileAsResource(fileName);
+
+        assertNotNull(resource);
     }
 }

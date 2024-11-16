@@ -3,6 +3,7 @@ package com.hancloud.hancloud.storage.service;
 import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.exception.FileNotFoundException;
 import com.hancloud.hancloud.storage.exception.FileUploadException;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
@@ -65,4 +66,13 @@ public interface FileService {
      * @throws FileNameDuplicationException 중복일 경우
      */
     void fileNameDuplicationCheck(Path path);
+
+    /**
+     * 파일 불러오기
+     *
+     * @param filePath 불러올 파일의 위치
+     * @return 파일
+     * @throws FileNotFoundException 파일을 불러 올 수 없을 떄
+     */
+    Resource loadFileAsResource(String filePath);
 }
