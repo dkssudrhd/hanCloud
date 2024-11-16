@@ -1,8 +1,68 @@
 package com.hancloud.hancloud.storage.service;
 
+import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
+import com.hancloud.hancloud.storage.exception.FileNotFoundException;
+import com.hancloud.hancloud.storage.exception.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+
+/**
+ *
+ * 파일 관련 서비스
+ *
+ * @author 한민기
+ *
+ */
 public interface FileService {
-    void storage(MultipartFile[] files);
-    String storage(MultipartFile file, String filePath);
+    /**
+     * 파일 단체 저장
+     *
+     * @param files 단체 저장할 파일
+     * @param filePath 파일의 저장 위치
+     */
+    void storage(MultipartFile[] files, String filePath);
+
+    /**
+     * 파일 한개 저장
+     * 파일 이름 확인 -> 저장할 위치 확인 -> 파일 중복 확인 -> 파일 저장
+     *
+     * @param file 저장할 파일
+     * @param filePath 파일의 위치
+     */
+    void storage(MultipartFile file, String filePath);
+
+    /**
+     * multipartFile 에서 파일의 확장자 얻기
+     *
+     * @param file 얻을 파일
+     * @return 확장자 ex) .png
+     * @throws FileNotFoundException 파일의 확장자가 없을 경우
+     */
+    String getFileExtension(MultipartFile file);
+
+    /**
+     * 파일의 이름 추출
+     *
+     * @param file 추출할 파일
+     * @return 파일의 이름
+     * @throws FileUploadException 파일의 이름이 null 일 경우
+     */
+    String getFileName(MultipartFile file);
+
+    /**
+     * 저장할 파일의 경로 찾기
+     *
+     * @param path 저장할 파일의 경로
+     * @throws FileNotFoundException 파일의 경로가 없을경우
+     */
+    void filePathIsExists(Path path);
+
+    /**
+     * 이름 중복 체크
+     *
+     * @param path 파일의 위치
+     * @throws FileNameDuplicationException 중복일 경우
+     */
+    void fileNameDuplicationCheck(Path path);
 }

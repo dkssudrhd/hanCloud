@@ -1,5 +1,6 @@
 package com.hancloud.hancloud.storage.service.impl;
 
+import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.service.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class FileServiceImplTest {
-    private FileService fileService; // storage 메서드가 포함된 클래스
-    private static final String TEST_FILE_PATH = "test/storage/";
+    private FileService fileService;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ class FileServiceImplTest {
         File file = new File("storageTest/kafka.png");
         FileInputStream inputStream = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile(
-                "file",                            // 필드 이름
+                "file",                      // 필드 이름
                file.getName(),                    // 파일 이름
                "application/octet-stream",        // MIME 타입 (필요에 따라 설정)
                inputStream                        // 파일 데이터
@@ -54,5 +54,12 @@ class FileServiceImplTest {
 
         // When & Then
         assertThrows(RuntimeException.class, () -> fileService.storage(mockFile, invalidFilePath));
+    }
+
+    @Test
+    void testFileNameDuplicationCheck(){
+        String fileName = "storage/dkssudrhd/kafka.png";
+        Path path = Paths.get(fileName);
+        assertThrows(FileNameDuplicationException.class, ()-> fileService.fileNameDuplicationCheck(path));
     }
 }
