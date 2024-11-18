@@ -3,7 +3,7 @@ package com.hancloud.hancloud.storage.service;
 import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.exception.FileNotFoundException;
 import com.hancloud.hancloud.storage.exception.FileUploadException;
-import com.hancloud.hancloud.util.ApiMessage;
+
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
