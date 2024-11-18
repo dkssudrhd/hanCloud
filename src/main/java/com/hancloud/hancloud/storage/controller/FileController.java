@@ -1,42 +1,56 @@
 package com.hancloud.hancloud.storage.controller;
 
+import com.hancloud.hancloud.storage.dto.response.FileSuccessResponse;
 import com.hancloud.hancloud.storage.service.FileService;
-import com.hancloud.hancloud.util.ApiMessage;
+import com.hancloud.hancloud.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/storage")
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
 
-    public ApiMessage uploadFile(@RequestParam("files") MultipartFile[] files,
+    /**
+     * 여러개의 파일 업로드
+     *
+     * @param apiId         API 아이디
+     * @param apiPassword   API 비밀번호
+     * @param files         저장할 파일
+     * @param path          저장할 파일의 위치
+     * @return              성공여부 응답
+     */
+    @PostMapping("/multi")
+    public ApiResponse<FileSuccessResponse> uploadFiles(
+            @RequestHeader(value = "API-ID") String apiId,
+            @RequestHeader(value = "API-PASSWORD") String apiPassword,
+            @RequestParam("files") MultipartFile[] files,
                                  @RequestParam("path") String path) {
-        Response res = new Response();
-        List<String> results = new ArrayList<>();
-        List<String> imageLocations = new ArrayList<>();
-//        try{
-//            results = storageService.saveFiles(files, postName);
-//            for(String result : results){
-//                imageLocations.add("/"+postName+"/"+result);
-//            }
-//            res.setImageLocations(imageLocations);
-//            res.setMessage("done");
-//            res.setSuccess(true);
-//            return new ResponseEntity<Response>(res, HttpStatus.OK);
-//        }catch (Exception e){
-//            res.setMessage("failed");
-//            res.setSuccess(false);
-//            return new ResponseEntity<Response>(res, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-        return ApiMessage.success("성공");
+        fileService.storage(files, path);
+        return ApiResponse.success(FileSuccessResponse.builder().message(files.length + "개 파일 저장 성공").build());
+    }
+
+    /**
+     * 파일 한개 업로드
+     *
+     * @param apiId         API 아이디
+     * @param apiPassword   API 비밀번호
+     * @param file          저장할 파일
+     * @param path          저장할 파일의 위치
+     * @return              성공여부 응답
+     */
+    @PostMapping
+    public ApiResponse<FileSuccessResponse> uploadFile(
+            @RequestHeader(value = "API-ID") String apiId,
+            @RequestHeader(value = "API-PASSWORD") String apiPassword,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("path") String path
+    ){
+        fileService.storage(file, path);
+        return ApiResponse.success(FileSuccessResponse.builder().message("파일 저장 성공").build());
     }
 }

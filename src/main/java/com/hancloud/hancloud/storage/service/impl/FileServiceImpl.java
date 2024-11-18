@@ -25,11 +25,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void storage(MultipartFile[] files, String filePath) {
-        for(int i=1; i<=files.length; i++) {
+        for(int i=0; i<files.length; i++) {
             try{
                 storage(files[i], filePath);
-            } catch (Exception e) {
-                log.error("{}번째 파일 저장 오류 : {}", i, e.getMessage());
+            } catch (RuntimeException e) {
+                log.error("{}번째 파일 저장 오류 : {}", i+1, e.getMessage());
+                throw new FileUploadException((i+1) +" 번째 파일 저장 오류");
             }
         }
     }
