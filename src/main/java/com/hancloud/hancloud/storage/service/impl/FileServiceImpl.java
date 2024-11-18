@@ -1,8 +1,6 @@
 package com.hancloud.hancloud.storage.service.impl;
 
-import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
-import com.hancloud.hancloud.storage.exception.FileNotFoundException;
-import com.hancloud.hancloud.storage.exception.FileUploadException;
+import com.hancloud.hancloud.storage.exception.*;
 import com.hancloud.hancloud.storage.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -100,7 +99,68 @@ public class FileServiceImpl implements FileService {
 
             return resource;
         } catch (MalformedURLException ex) {
+            log.error("로딩 중 {} 파일을 찾을 수 없음", filePath);
             throw new FileNotFoundException(filePath + " 파일을 찾을 수 없습니다.");
+        }
+    }
+
+    @Override
+    public void deleteFile(String filePath) {
+        File file = new File(DEFAULT_FILE_PATH + filePath);
+        if(file.exists()){
+            boolean result = file.delete();
+            if(!result){
+                log.error("삭제 중 {} 파일 삭제 오류", filePath);
+                throw new FileDeleteFailedException(filePath + " 파일 삭제에 오류가 발생하였습니다.");
+            }
+        } else{
+            log.error("삭제 중 {} 파일을 찾을 수 없음", filePath);
+            throw new FileNotFoundException(filePath + " 파일을 찾을 수 없습니다.");
+        }
+    }
+
+    @Override
+    public void storageAdd(String filePath) {
+
+        Path path = Paths.get(DEFAULT_FILE_PATH + filePath);
+        if(Files.exists(path)) {
+            log.error("{} 에 폴더가 이미 존재", path);
+            throw new FileAlreadyExistsException(path + " 에 폴더가 이미 존재 합니다.");
+        }
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            log.error("{} 를 만드는 도중 오류", filePath);
+            throw new FileCreateException(filePath + "를 만드는 도중 오류가 발생하였습니다.");
+        }
+    }
+
+    @Override
+    public void storageRemove(String filePath) {
+        Path path = Paths.get(DEFAULT_FILE_PATH + filePath);
+
+        if(Files.isDirectory(path)) {
+            File[] files = path.toFile().listFiles();
+            if (files == null) {
+                deleteFile(filePath);
+                return;
+            }
+            for(File file : files) {
+                if(file.isDirectory()) {
+                    log.info(file.getPath().substring(DEFAULT_FILE_PATH.length()));
+                    storageRemove(file.getPath().substring(DEFAULT_FILE_PATH.length()));
+
+                }else{
+                    boolean result = file.delete();
+                    if(!result){
+                        log.error("폴더안 파일 삭제 중 {} 파일 삭제 오류", filePath);
+                        throw new FileDeleteFailedException(file.getName() + " 폴더안 파일 삭제에 오류가 발생하였습니다.");
+                    }
+                }
+            }
+            deleteFile(filePath);
+        } else{
+            throw new FileNotFoundException(filePath + " 해당 폴더가 없습니다.");
         }
     }
 }

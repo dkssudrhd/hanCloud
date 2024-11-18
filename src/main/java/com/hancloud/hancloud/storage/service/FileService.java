@@ -3,6 +3,7 @@ package com.hancloud.hancloud.storage.service;
 import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.exception.FileNotFoundException;
 import com.hancloud.hancloud.storage.exception.FileUploadException;
+import com.hancloud.hancloud.util.ApiMessage;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,4 +76,26 @@ public interface FileService {
      * @throws FileNotFoundException 파일을 불러 올 수 없을 떄
      */
     Resource loadFileAsResource(String filePath);
+
+    /**
+     * 파일 삭제
+     *
+     * @param filePath 파일의 위치
+     *
+     */
+    void deleteFile(String filePath);
+
+    /**
+     * 파일의 저장소 만들기
+     *
+     * @param filePath 저장소 파일의 이름 및 위치
+     */
+    void storageAdd(String filePath);
+
+    /**
+     * 저장소 삭제 (저장소에 있는 파일 다 삭제)
+     *
+     * @param filePath 저장소에 있는 파일 다 삭제
+     */
+    void storageRemove(String filePath);
 }

@@ -1,5 +1,6 @@
 package com.hancloud.hancloud.storage.service.impl;
 
+import com.hancloud.hancloud.storage.exception.FileAlreadyExistsException;
 import com.hancloud.hancloud.storage.exception.FileNameDuplicationException;
 import com.hancloud.hancloud.storage.service.FileService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class FileServiceImplTest {
@@ -27,7 +29,6 @@ class FileServiceImplTest {
     void setUp() {
         fileService = new FileServiceImpl();
     }
-
 
     @Test
     @DisplayName("파일 저장")
@@ -40,7 +41,7 @@ class FileServiceImplTest {
                "application/octet-stream",        // MIME 타입 (필요에 따라 설정)
                inputStream                        // 파일 데이터
        );
-        fileService.storage(multipartFile, "dkssudrhd");
+        fileService.storage(multipartFile, "test");
 
     }
 
@@ -62,7 +63,7 @@ class FileServiceImplTest {
     @Test
     @DisplayName("파일 이름 중복 확인")
     void testFileNameDuplicationCheck(){
-        String fileName = "storage/dkssudrhd/kafka.png";
+        String fileName = "storage/test/kafka.png";
         Path path = Paths.get(fileName);
         assertThrows(FileNameDuplicationException.class, ()-> fileService.fileNameDuplicationCheck(path));
     }
@@ -70,9 +71,43 @@ class FileServiceImplTest {
     @Test
     @DisplayName("파일 로딩 확인")
     void testLoadFileAsResource(){
-        String fileName = "dkssudrhd/kafka.png";
+        String fileName = "test/kafka.png";
         Resource resource = fileService.loadFileAsResource(fileName);
 
         assertNotNull(resource);
     }
+
+    @Test
+    @DisplayName("파일 삭제 확인")
+    void testDeleteFile(){
+        String fileName = "test/kafka.png";
+        fileService.deleteFile(fileName);
+    }
+
+    @Test
+    @DisplayName("폴더 생성 확인")
+    void testCreateFileFolder(){
+        String fileName = "test/a";
+        fileService.storageAdd(fileName);
+    }
+    @Test
+    @DisplayName("폴더 생성 확인")
+    void testCreateFileFolder2(){
+        String fileName = "test/a/b/c";
+        fileService.storageAdd(fileName);
+    }
+    @Test
+    @DisplayName("폴더 생성 중복 확인")
+    void testCreateFileDuplication(){
+        String fileName = "test/duplication";
+        assertThrows(FileAlreadyExistsException.class ,  ()-> fileService.storageAdd(fileName));
+    }
+
+    @Test
+    @DisplayName("폴더 삭제 확인")
+    void testDeleteFile2(){
+        String fileName = "test/a/b";
+        fileService.storageRemove(fileName);
+    }
+
 }
