@@ -1,0 +1,41 @@
+### GET request to example server
+GET localhost:9090/storage/test
+
+### Post 파일 저장확인
+POST http://localhost:9090/storage/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary123456
+API-ID: your_api_id_here
+API-PASSWORD: your_api_password_here
+
+------WebKitFormBoundary123456
+Content-Disposition: form-data; name="file"; filename="kafka.png"
+Content-Type: image/png
+
+< ../storageTest/kafka.png
+------WebKitFormBoundary123456
+Content-Disposition: form-data; name="path"
+
+test/a
+------WebKitFormBoundary123456--
+
+### 파일 업로드 요청
+POST http://localhost:9090/storage/uploads
+Content-Type: multipart/form-data; boundary=boundary
+API-ID: your_api_id_here
+API-PASSWORD: your_api_password_here
+
+--boundary
+Content-Disposition: form-data; name="files"; filename="kafka.png"
+Content-Type: image/png
+
+< ../storageTest/kafka.png
+--boundary
+Content-Disposition: form-data; name="files"; filename="kubernetes.png"
+Content-Type: image/png
+
+< ../storageTest/kubernetes.png
+--boundary
+Content-Disposition: form-data; name="path"
+
+test/a
+--boundary--
