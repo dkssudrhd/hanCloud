@@ -98,4 +98,11 @@ public interface FileService {
      * @param filePath 저장소에 있는 파일 다 삭제
      */
     void storageRemove(String filePath);
+
+    /**
+     * 이미지인지 확인
+     *
+     * @param filePath 파일의 위치
+     */
+    void isImage(String filePath);
 }

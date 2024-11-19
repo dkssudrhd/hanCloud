@@ -64,7 +64,8 @@ public class WebControllerAdvice {
             FileCreateException.class,
             FileDeleteFailedException.class,
             FileNameDuplicationException.class,
-            FileUploadException.class
+            FileUploadException.class,
+            FileIsNotImageException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<ErrorResponseForm> badRequestHandler(Exception ex) {
@@ -77,5 +78,4 @@ public class WebControllerAdvice {
         );
 
     }
-
 }

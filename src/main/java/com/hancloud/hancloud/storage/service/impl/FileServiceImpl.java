@@ -96,7 +96,6 @@ public class FileServiceImpl implements FileService {
             Path path = uploadPath.resolve(filePath).normalize();
             Resource resource = new UrlResource(path.toUri());
             filePathIsExists(path);
-
             return resource;
         } catch (Exception ex) {
             log.error("로딩 중 {} 파일을 찾을 수 없음", filePath);
@@ -161,6 +160,20 @@ public class FileServiceImpl implements FileService {
             deleteFile(filePath);
         } else{
             throw new FileNotFoundException(filePath + " 해당 폴더가 없습니다.");
+        }
+    }
+
+    @Override
+    public void isImage(String filePath) {
+        try {
+            Path path = Paths.get(DEFAULT_FILE_PATH + filePath).normalize();
+            String mimeType = Files.probeContentType(path);
+            boolean result = mimeType != null && mimeType.startsWith("image/");
+            if(!result){
+                throw new FileIsNotImageException("이미지 파일이 아닙니다.");
+            }
+        } catch (IOException e) {
+            throw new FileIsNotImageException("이미지 파일이 아닙니다.");
         }
     }
 }

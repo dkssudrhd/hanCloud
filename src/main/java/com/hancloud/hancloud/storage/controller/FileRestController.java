@@ -6,12 +6,14 @@ import com.hancloud.hancloud.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 /**
  * 파일에 관한 내용이 있는 controller
@@ -22,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 @RestController
 @RequestMapping("/storage")
 @RequiredArgsConstructor
-public class FileController {
+public class FileRestController {
     private final FileService fileService;
 
     /**
@@ -122,7 +124,7 @@ public class FileController {
     }
 
     /**
-     * 파일 읽기
+     * 이미지의 파일일 경우 웹페이지를 통해 확인
      *
      * @param apiId         API 아이디
      * @param apiPassword   API 비밀번호
@@ -130,14 +132,36 @@ public class FileController {
      * @return              파일 리턴
      */
     @GetMapping("/load")
-    public Resource downloadFile(
+    public ResponseEntity<Resource> loadImageFile(
             @RequestHeader(value = "API-ID", required = false) String apiId,
             @RequestHeader(value = "API-PASSWORD", required = false) String apiPassword,
             @RequestParam("path") String path){
-        log.info("들어옴");
-        return fileService.loadFileAsResource(path);
+        fileService.isImage(path);
+        Resource resource = fileService.loadFileAsResource(path);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\""+ resource.getFilename()+ "\"")
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 
-
+    /**
+     * 파일 다운로드
+     *
+     * @param apiId         API 아이디
+     * @param apiPassword   API 비밀번호
+     * @param path          읽을 파일 위치
+     * @return              파일 리턴
+     */
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(
+            @RequestHeader(value = "API-ID", required = false) String apiId,
+            @RequestHeader(value = "API-PASSWORD", required = false) String apiPassword,
+            @RequestParam("path") String path){
+        Resource resource = fileService.loadFileAsResource(path);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\""+ resource.getFilename()+ "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
 
 }
