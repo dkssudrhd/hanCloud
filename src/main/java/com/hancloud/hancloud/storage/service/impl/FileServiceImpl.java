@@ -17,8 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-@Service
 @Slf4j
+@Service
 public class FileServiceImpl implements FileService {
 
     private static final String DEFAULT_FILE_PATH = "storage/";
@@ -98,7 +98,7 @@ public class FileServiceImpl implements FileService {
             filePathIsExists(path);
 
             return resource;
-        } catch (MalformedURLException ex) {
+        } catch (Exception ex) {
             log.error("로딩 중 {} 파일을 찾을 수 없음", filePath);
             throw new FileNotFoundException(filePath + " 파일을 찾을 수 없습니다.");
         }
