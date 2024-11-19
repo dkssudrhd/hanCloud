@@ -1,6 +1,6 @@
 package com.hancloud.hancloud.util.exceptionhandler;
 
-import ch.qos.logback.core.model.Model;
+
 import com.hancloud.hancloud.storage.exception.*;
 import com.hancloud.hancloud.util.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class WebControllerAdvice {
 
         return ApiResponse.fail(500,
                ErrorResponseForm.builder()
-                       .title("원인을 알수 없는 오류가 발생하였습니다.")
+                       .title(ex.getMessage() + "원인을 알수 없는 오류가 발생하였습니다.")
                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                        .timestamp(ZonedDateTime.now().toString())
                        .build()

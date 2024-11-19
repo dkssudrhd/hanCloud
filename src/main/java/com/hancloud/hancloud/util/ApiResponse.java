@@ -36,17 +36,17 @@ public class ApiResponse<T> {
         }
     }
     public static <T> ApiResponse<T> success(T body) {
-        return new ApiResponse<T>(
+        return new ApiResponse<>(
                 new Header(true, HttpStatus.OK.value()),
                 new Body<>(body));
     }
     public static <T> ApiResponse<T> createdSuccess(T body) {
-        return new ApiResponse<T>(
+        return new ApiResponse<>(
                 new Header(true, HttpStatus.CREATED.value()),
                 new Body<>(body));
     }
     public static <T> ApiResponse<T> deleteSuccess(T body) {
-        return new ApiResponse<T>(
+        return new ApiResponse<>(
                 new Header(true, HttpStatus.NO_CONTENT.value()),
                 new Body<>(body));
     }
