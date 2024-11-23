@@ -13,11 +13,10 @@ spring:
             hbm2ddl:
               auto: validate
 
-
     datasource:
-        url: jdbc:mariadb://121.179.140.28:3306/hanCloud
-        username: lilac-soa
-        password: nhnacademy123!
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
         driver-class-name: org.mariadb.jdbc.Driver
         type: org.apache.commons.dbcp2.BasicDataSource
         dbcp2:
