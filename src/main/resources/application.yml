@@ -15,9 +15,9 @@ spring:
 
 
     datasource:
-        url: jdbc:mariadb://121.179.140.28:3306/hanCloud
-        username: han_cloud
-        password: hans3123!
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
         driver-class-name: org.mariadb.jdbc.Driver
         type: org.apache.commons.dbcp2.BasicDataSource
         dbcp2:
