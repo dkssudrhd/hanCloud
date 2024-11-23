@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>17</java.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
@@ -42,7 +43,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <scope>runtime</scope>
+            <version>3.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,10 +74,112 @@
             <version>2.1.0</version>
         </dependency>
 
-    </dependencies>
 
+        <!-- spring rest docs 생성을 위한 디펜던시 -->
+        <dependency>
+            <groupId>org.springframework.restdocs</groupId>
+            <artifactId>spring-restdocs-mockmvc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- restdocs spec(openapi spec) 문서를 생성하기 위한 디펜던시 -->
+        <dependency>
+            <groupId>com.epages</groupId>
+            <artifactId>restdocs-api-spec</artifactId>
+            <version>0.18.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.epages</groupId>
+            <artifactId>restdocs-api-spec-mockmvc</artifactId>
+            <version>0.18.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- restdocs spec(openapi spec) 문서를 생성하기 위한 디펜던시 -->
+
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>html</backend>
+                            <doctype>book</doctype>
+                            <sourceDirectory>${project.basedir}/src/docs/asciidoc</sourceDirectory>
+                            <sourceDocumentName>index.adoc</sourceDocumentName>
+                            <outputDirectory>${project.build.directory}/classes/static/docs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.restdocs</groupId>
+                        <artifactId>spring-restdocs-asciidoctor</artifactId>
+                        <version>${spring-restdocs.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.berkleytechnologyservices</groupId>
+                <artifactId>restdocs-spec-maven-plugin</artifactId>
+                <version>0.22</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <specifications>
+                                <specification>
+                                    <type>OPENAPI_V2</type>
+                                </specification>
+                                <specification>
+                                    <type>OPENAPI_V3</type>
+                                    <format>JSON</format>
+                                </specification>
+                                <specification>
+                                    <type>POSTMAN_COLLECTION</type>
+                                    <filename>postman-collection</filename>
+                                </specification>
+                            </specifications>
+                            <name>${project.artifactId}</name>
+                            <version>${project.version}</version>
+                            <host>121.179.140.28:9090</host>
+                            <schemes>
+                                <scheme>http</scheme>
+                            </schemes>
+                            <snippetsDirectory>
+                                ${project.build.directory}/generated-snippets
+                            </snippetsDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/classes/static/docs
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
