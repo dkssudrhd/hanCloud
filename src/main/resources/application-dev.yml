@@ -1,0 +1,18 @@
+spring:
+    config:
+        activate:
+          on-profile: dev
+
+    datasource:
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
+        driver-class-name: org.mariadb.jdbc.Driver
+        type: org.apache.commons.dbcp2.BasicDataSource
+        dbcp2:
+          initial-size: 20
+          max-total: 20
+          max-idle: 20
+          min-idle: 20
+          test-on-borrow: true
+          validation-query: SELECT 1
