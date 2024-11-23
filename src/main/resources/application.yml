@@ -13,7 +13,6 @@ spring:
             hbm2ddl:
               auto: validate
 
-
     datasource:
         url: ${DATABASE_URL}
         username: ${DATABASE_USERNAME}
