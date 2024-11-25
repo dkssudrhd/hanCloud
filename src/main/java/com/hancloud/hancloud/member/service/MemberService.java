@@ -1,6 +1,5 @@
 package com.hancloud.hancloud.member.service;
 
-import com.hancloud.hancloud.member.dto.entity.Member;
 import com.hancloud.hancloud.member.dto.request.CreateMemberRequest;
 import com.hancloud.hancloud.member.dto.response.CreatedApiMemberResponse;
 

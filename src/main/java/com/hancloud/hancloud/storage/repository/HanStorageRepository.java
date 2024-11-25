@@ -1,6 +1,5 @@
 package com.hancloud.hancloud.storage.repository;
 
-import com.hancloud.hancloud.member.dto.entity.Member;
 import com.hancloud.hancloud.storage.dto.entity.HanStorage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
