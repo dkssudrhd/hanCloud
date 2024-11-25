@@ -1,6 +1,6 @@
 package com.hancloud.hancloud.member.dto.entity;
 
-import com.hancloud.hancloud.group.dto.entity.GroupMember;
+import com.hancloud.hancloud.team.dto.entity.TeamMember;
 import com.hancloud.hancloud.member.dto.enums.MemberAuth;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 @Entity
 @NoArgsConstructor
@@ -19,15 +19,36 @@ import java.util.UUID;
 @Setter
 public class ApiMember {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
-    UUID password;
+    String id;
+    String password;
 
-    MemberAuth auth;
-
-    @OneToOne
+    @ManyToOne
     Member member;
 
-    @OneToMany(mappedBy = "apiMember")
-    List<GroupMember> groupMemberList = new ArrayList<>();
+    /**
+     * id 와 password 랜덤 생성
+     */
+    public void generateIdPassword() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateRandom();
+        }
+        if (this.password == null || this.password.isEmpty()) {
+            this.password = generateRandom();
+        }
+    }
+
+    private String generateRandom() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return sb.toString();
+    }
+
+    public ApiMember(Member member) {
+        this.member = member;
+        generateIdPassword();
+    }
 }

@@ -1,6 +1,7 @@
-package com.hancloud.hancloud.group.dto.entity;
+package com.hancloud.hancloud.team.dto.entity;
 
 import com.hancloud.hancloud.member.dto.entity.ApiMember;
+import com.hancloud.hancloud.member.dto.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,17 +15,23 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"api_member_id", "group_id"})
+                @UniqueConstraint(columnNames = {"member_id", "team_id"})
         }
 )
-public class GroupMember {
+public class TeamMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
-    private ApiMember apiMember;
+    private Team team;
 
     @ManyToOne
-    private Group group;
+    private Member member;
+
+    public TeamMember(Team team, Member member) {
+        this.team = team;
+        this.member = member;
+    }
+
 }
