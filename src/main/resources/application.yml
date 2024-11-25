@@ -1,6 +1,10 @@
 spring:
     application:
         name: hanCloud
+
+    profiles:
+      active: prod
+
     jpa:
         open-in-view: false
         show-sql: true
@@ -13,31 +17,22 @@ spring:
             hbm2ddl:
               auto: validate
 
-    datasource:
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-        driver-class-name: org.mariadb.jdbc.Driver
-        type: org.apache.commons.dbcp2.BasicDataSource
-        dbcp2:
-          initial-size: 10
-          max-total: 10
-          max-idle: 10
-          min-idle: 10
-          test-on-borrow: true
-          validation-query: SELECT 1
-
     servlet:
-      multipart:
-        enabled: true
-        file-size-threshold: 2KB
-        max-file-size: 200MB
-        max-request-size: 215MB
+        multipart:
+          enabled: true
+          file-size-threshold: 2KB
+          max-file-size: 200MB
+          max-request-size: 215MB
 
 server:
-  port: 9090
-  shutdown: graceful
+    port: 9090
+    shutdown: graceful
 
 logging:
-  level:
-    org.springframework.web.multipart: DEBUG
+    level:
+      org.springframework.web.multipart: DEBUG
+
+springdoc:
+    swagger-ui:
+      url: /docs/openapi-3.0.json
+      path: /docs/swagger
