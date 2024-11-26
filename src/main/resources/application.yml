@@ -15,7 +15,7 @@ spring:
             highlight_sql: true
             auto_quote_keyword: true
             hbm2ddl:
-              auto: create
+              auto: validate
 
     servlet:
         multipart:
