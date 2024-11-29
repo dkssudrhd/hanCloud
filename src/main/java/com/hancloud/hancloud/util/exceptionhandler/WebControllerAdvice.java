@@ -1,8 +1,10 @@
 package com.hancloud.hancloud.util.exceptionhandler;
 
 
+import com.hancloud.hancloud.member.exception.ApiMemberNotFoundException;
 import com.hancloud.hancloud.storage.exception.*;
 import com.hancloud.hancloud.util.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.ZonedDateTime;
 
+@Slf4j
 @RestControllerAdvice
 public class WebControllerAdvice {
 
@@ -24,6 +27,7 @@ public class WebControllerAdvice {
     )
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<ErrorResponseForm> runtimeExceptionHandler(Exception ex) {
+        log.error("{}: {}", ex.getClass().getName(), ex.getMessage());
 
         return ApiResponse.fail(500,
                ErrorResponseForm.builder()
@@ -60,6 +64,7 @@ public class WebControllerAdvice {
      * @return 예외 메시지
      */
     @ExceptionHandler({
+            ApiMemberNotFoundException.class,
             FileAlreadyExistsException.class,
             FileCreateException.class,
             FileDeleteFailedException.class,

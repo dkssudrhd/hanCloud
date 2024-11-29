@@ -103,12 +103,14 @@ class FileRestControllerTest extends BaseDocumentTest {
     @DisplayName("폴더 생성")
     void uploadFolderTest() throws Exception {
         String path = "/test";
-        doNothing().when(fileService).storageAdd(path);
+        String folder = "folder";
+        doNothing().when(fileService).storageAdd(path + folder);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.post("/storage/folder")
                         .header("API-ID", "API id")
                         .header("API-PASSWORD", "API password")
                         .param("path", path)
+                        .param("folder", folder)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -130,12 +132,14 @@ class FileRestControllerTest extends BaseDocumentTest {
     @DisplayName("파일 하나 삭제")
     void deleteFileTest() throws Exception {
         String path = "/test";
-        doNothing().when(fileService).deleteFile(path);
+        String fileName = "test.png";
+        doNothing().when(fileService).deleteFile(path + "/" + fileName);
 
         this.mockMvc.perform(RestDocumentationRequestBuilders.delete("/storage")
                         .header("API-ID", "API id")
                         .header("API-PASSWORD", "API password")
                         .param("path", path)
+                        .param("fileName", fileName)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())
