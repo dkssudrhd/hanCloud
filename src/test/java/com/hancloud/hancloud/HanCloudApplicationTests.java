@@ -1,8 +1,5 @@
 package com.hancloud.hancloud;
 
-import com.hancloud.hancloud.member.dto.entity.Member;
-import com.hancloud.hancloud.member.dto.request.CreateMemberRequest;
-import com.hancloud.hancloud.member.dto.response.CreatedApiMemberResponse;
 import com.hancloud.hancloud.member.repository.MemberRepository;
 import com.hancloud.hancloud.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class HanCloudApplicationTests {
 
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
+//    @Autowired
+//    private MemberService memberService;
+//
+//    @Autowired
+//    private MemberRepository memberRepository;
 
     @Test
     void contextLoads() {
