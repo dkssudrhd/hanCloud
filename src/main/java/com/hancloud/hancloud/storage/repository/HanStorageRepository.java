@@ -1,7 +1,8 @@
 package com.hancloud.hancloud.storage.repository;
 
-import com.hancloud.hancloud.storage.dto.entity.HanStorage;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hancloud.hancloud.storage.dto.entity.HanStorage;
 
 /**
  * 팀 관련 레포지토리
@@ -9,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author 한민기
  */
 public interface HanStorageRepository extends JpaRepository<HanStorage, Long> {
-    boolean existsByPath(String path);
+	boolean existsByPath(String path);
 }

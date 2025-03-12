@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CreatedApiMemberResponse(
-        String apiId,
-        String apiPassword
+	String apiId,
+	String apiPassword
 ) {
 }
