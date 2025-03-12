@@ -9,16 +9,16 @@ import com.hancloud.hancloud.member.dto.response.CreatedApiMemberResponse;
  * @author 한민기
  */
 public interface MemberService {
-    /**
-     * 해당 유저 만들기
-     *
-     * @param createMemberRequest 유저 관련 request
-     */
-    void addMember(CreateMemberRequest createMemberRequest);
+	/**
+	 * 해당 유저 만들기
+	 *
+	 * @param createMemberRequest 유저 관련 request
+	 */
+	void addMember(CreateMemberRequest createMemberRequest);
 
-    /**
-     * ApiMember 만들기
-     *
-     */
-    CreatedApiMemberResponse addApiMember(String memberId);
+	/**
+	 * ApiMember 만들기
+	 *
+	 */
+	CreatedApiMemberResponse addApiMember(String memberId);
 }

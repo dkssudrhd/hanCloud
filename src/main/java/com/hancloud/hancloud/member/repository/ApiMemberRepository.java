@@ -1,7 +1,8 @@
 package com.hancloud.hancloud.member.repository;
 
-import com.hancloud.hancloud.member.dto.entity.ApiMember;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hancloud.hancloud.member.dto.entity.ApiMember;
 
 /**
  * 멤버관련 레포지토리

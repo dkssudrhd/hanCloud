@@ -1,7 +1,5 @@
 package com.hancloud.hancloud;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,40 +17,43 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Disabled
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public abstract class BaseDocumentTest {
-    @Autowired
-    protected ObjectMapper objectMapper;
+	@Autowired
+	protected ObjectMapper objectMapper;
 
-    @Autowired
-    protected MockMvc mockMvc;
+	@Autowired
+	protected MockMvc mockMvc;
 
-    protected final String snippetPath = "{class-name}/{method-name}";
+	protected final String snippetPath = "{class-name}/{method-name}";
 
-    @BeforeEach
-    void setUp(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(MockMvcRestDocumentation.documentationConfiguration(provider)
-                        //요청 body 의 payload 를 보기 좋게 출력
-                        .operationPreprocessors().withRequestDefaults(Preprocessors.prettyPrint())
-                        .and()
-                        //응답 body 의 payload 를 보기 좋게 출력
-                        .operationPreprocessors().withResponseDefaults(Preprocessors.prettyPrint()))
-                //테스트 결과를 항상 print
-                .alwaysDo(MockMvcResultHandlers.print())
-                //한글 깨짐 방지
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .build();
-    }
+	@BeforeEach
+	void setUp(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+			.apply(MockMvcRestDocumentation.documentationConfiguration(provider)
+				//요청 body 의 payload 를 보기 좋게 출력
+				.operationPreprocessors().withRequestDefaults(Preprocessors.prettyPrint())
+				.and()
+				//응답 body 의 payload 를 보기 좋게 출력
+				.operationPreprocessors().withResponseDefaults(Preprocessors.prettyPrint()))
+			//테스트 결과를 항상 print
+			.alwaysDo(MockMvcResultHandlers.print())
+			//한글 깨짐 방지
+			.addFilter(new CharacterEncodingFilter("UTF-8", true))
+			.build();
+	}
 
-    protected String createJson(Object dto) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(dto);
-    }
+	protected String createJson(Object dto) throws JsonProcessingException {
+		return objectMapper.writeValueAsString(dto);
+	}
 
-    protected Attributes.Attribute attribute(final String key, final String value){
-        return new Attributes.Attribute(key,value);
-    }
+	protected Attributes.Attribute attribute(final String key, final String value) {
+		return new Attributes.Attribute(key, value);
+	}
 }
