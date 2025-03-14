@@ -10,14 +10,12 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
-import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Disabled
@@ -49,11 +47,4 @@ public abstract class BaseDocumentTest {
 			.build();
 	}
 
-	protected String createJson(Object dto) throws JsonProcessingException {
-		return objectMapper.writeValueAsString(dto);
-	}
-
-	protected Attributes.Attribute attribute(final String key, final String value) {
-		return new Attributes.Attribute(key, value);
-	}
 }
