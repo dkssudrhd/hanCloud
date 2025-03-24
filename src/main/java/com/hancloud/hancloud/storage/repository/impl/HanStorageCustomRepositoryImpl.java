@@ -30,7 +30,7 @@ public class HanStorageCustomRepositoryImpl implements HanStorageCustomRepositor
 
 	@Transactional
 	@Override
-	public boolean useCan(String memberId, String path) {
+	public boolean isMemberPathCan(String memberId, String path) {
 
 		UUID uuid = UUID.fromString(memberId);
 
