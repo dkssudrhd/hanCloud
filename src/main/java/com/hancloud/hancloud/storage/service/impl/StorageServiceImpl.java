@@ -46,7 +46,7 @@ public class StorageServiceImpl implements StorageService {
 		if (member.getAuth().equals(MemberAuth.admin)) {
 			log.info("admin");
 		}
-		if (member.getAuth().equals(MemberAuth.admin) || hanStorageRepository.useCan(memberId, bucketPath)) {
+		if (member.getAuth().equals(MemberAuth.admin) || hanStorageRepository.isMemberPathCan(memberId, bucketPath)) {
 			return MemberPathResponse.builder()
 				.nowLogin(true)
 				.auth(StorageAuth.all.name())
