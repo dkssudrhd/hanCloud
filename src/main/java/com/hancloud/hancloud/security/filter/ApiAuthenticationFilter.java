@@ -70,14 +70,13 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 
 		} catch (Exception e) {
-			// 기타 예외 처리
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().write(objectMapper.writeValueAsString(
 				ApiResponse.badRequestFail(
 					ErrorResponseForm.builder()
-						.title("API 인증 권한 실패입니다.")
+						.title(e.getMessage())
 						.status(HttpStatus.UNAUTHORIZED.value())
 						.timestamp(ZonedDateTime.now().toString())
 						.build()
