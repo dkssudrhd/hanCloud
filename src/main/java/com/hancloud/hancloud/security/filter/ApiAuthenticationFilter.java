@@ -1,9 +1,11 @@
 package com.hancloud.hancloud.security.filter;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +18,8 @@ import com.hancloud.hancloud.member.dto.response.LoginResponse;
 import com.hancloud.hancloud.member.service.ApiLoginService;
 import com.hancloud.hancloud.storage.dto.response.MemberPathResponse;
 import com.hancloud.hancloud.storage.service.StorageService;
+import com.hancloud.hancloud.util.ApiResponse;
+import com.hancloud.hancloud.util.exceptionhandler.ErrorResponseForm;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,30 +43,46 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
 		@NonNull HttpServletResponse response,
 		@NonNull FilterChain filterChain)
 		throws ServletException, IOException {
-		String apiId = request.getHeader("API-ID");
-		String apiPassword = request.getHeader("API-PASSWORD");
-		Authentication auth;
+		try {
+			String apiId = request.getHeader("API-ID");
+			String apiPassword = request.getHeader("API-PASSWORD");
+			Authentication auth;
+			String path = request.getParameter("path");
 
-		String path = request.getParameter("path");
+			if (Objects.nonNull(apiId)) {
+				// 회원 로그인 검증
+				LoginResponse loginResponse = logInServiceApi.loginChecking(LoginRequest.builder()
+					.id(apiId)
+					.password(apiPassword).build());
+				MemberPathResponse memberPathResponse = storageService.canUse(loginResponse.memberId(), path);
 
-		if (Objects.nonNull(apiId)) {
-			// 회원
-			LoginResponse loginResponse = logInServiceApi.loginChecking(LoginRequest.builder()
-				.id(apiId)
-				.password(apiPassword).build());
-			MemberPathResponse memberPathResponse = storageService.canUse(loginResponse.memberId(), path);
+				auth = new UsernamePasswordAuthenticationToken(loginResponse.memberId(), null,
+					List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+			} else {
+				// 비회원 검증
+				MemberPathResponse memberPathResponse = storageService.canUse(null, path);
 
-			auth = new UsernamePasswordAuthenticationToken(loginResponse.memberId(), null,
-				List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
-		} else {
-			// 비회원
-			MemberPathResponse memberPathResponse = storageService.canUse(null, path);
+				auth = new UsernamePasswordAuthenticationToken(null, null,
+					List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+			}
 
-			auth = new UsernamePasswordAuthenticationToken(null, null,
-				List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			filterChain.doFilter(request, response);
+
+		} catch (Exception e) {
+			// 기타 예외 처리
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write(objectMapper.writeValueAsString(
+				ApiResponse.badRequestFail(
+					ErrorResponseForm.builder()
+						.title("API 인증 권한 실패입니다.")
+						.status(HttpStatus.UNAUTHORIZED.value())
+						.timestamp(ZonedDateTime.now().toString())
+						.build()
+				)
+			));
 		}
-		SecurityContextHolder.getContext().setAuthentication(auth);
-
-		filterChain.doFilter(request, response);
 	}
 }
