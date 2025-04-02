@@ -70,7 +70,7 @@ public class ApiResponse<T> {
 
 	public static <T> ApiResponse<T> badRequestFail(T body) {
 		return new ApiResponse<>(
-			new Header(false, HttpStatus.BAD_REQUEST.value()),
+			new Header(false, HttpStatus.UNAUTHORIZED.value()),
 			new Body<>(body));
 	}
 }

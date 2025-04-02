@@ -90,4 +90,16 @@ public class WebControllerAdvice {
 		);
 
 	}
+
+	@ExceptionHandler(Exception.class)
+	public ApiResponse<ErrorResponseForm> handleException(Exception ex) {
+		return ApiResponse.badRequestFail(
+			ErrorResponseForm.builder()
+				.title(ex.getMessage())
+				.status(HttpStatus.NOT_FOUND.value())
+				.timestamp(ZonedDateTime.now().toString())
+				.build()
+		);
+	}
+
 }
