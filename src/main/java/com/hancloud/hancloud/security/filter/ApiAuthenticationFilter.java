@@ -27,11 +27,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  *
  */
+@Slf4j
 @RequiredArgsConstructor
 public class ApiAuthenticationFilter extends OncePerRequestFilter {
 	private final ObjectMapper objectMapper;
@@ -49,21 +51,26 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
 			Authentication auth;
 			String path = request.getParameter("path");
 
-			if (Objects.nonNull(apiId)) {
-				// 회원 로그인 검증
-				LoginResponse loginResponse = logInServiceApi.loginChecking(LoginRequest.builder()
-					.id(apiId)
-					.password(apiPassword).build());
-				MemberPathResponse memberPathResponse = storageService.canUse(loginResponse.memberId(), path);
+			if (!Objects.isNull(path)) {
+				if (Objects.nonNull(apiId)) {
+					// 회원 로그인 검증
+					LoginResponse loginResponse = logInServiceApi.loginChecking(LoginRequest.builder()
+						.id(apiId)
+						.password(apiPassword).build());
+					MemberPathResponse memberPathResponse = storageService.canUse(loginResponse.memberId(), path);
 
-				auth = new UsernamePasswordAuthenticationToken(loginResponse.memberId(), null,
-					List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+					auth = new UsernamePasswordAuthenticationToken(loginResponse.memberId(), null,
+						List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+				} else {
+					// 비회원 검증
+					MemberPathResponse memberPathResponse = storageService.canUse(null, path);
+
+					auth = new UsernamePasswordAuthenticationToken(null, null,
+						List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+				}
 			} else {
-				// 비회원 검증
-				MemberPathResponse memberPathResponse = storageService.canUse(null, path);
-
-				auth = new UsernamePasswordAuthenticationToken(null, null,
-					List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
+				filterChain.doFilter(request, response);
+				return;
 			}
 
 			SecurityContextHolder.getContext().setAuthentication(auth);
