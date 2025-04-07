@@ -57,13 +57,13 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
 					LoginResponse loginResponse = logInServiceApi.loginChecking(LoginRequest.builder()
 						.id(apiId)
 						.password(apiPassword).build());
-					MemberPathResponse memberPathResponse = storageService.canUse(loginResponse.memberId(), path);
+					MemberPathResponse memberPathResponse = storageService.memberCanUse(loginResponse.memberId(), path);
 
 					auth = new UsernamePasswordAuthenticationToken(loginResponse.memberId(), null,
 						List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
 				} else {
 					// 비회원 검증
-					MemberPathResponse memberPathResponse = storageService.canUse(null, path);
+					MemberPathResponse memberPathResponse = storageService.nonMemberCanUse(path);
 
 					auth = new UsernamePasswordAuthenticationToken(null, null,
 						List.of(new SimpleGrantedAuthority(memberPathResponse.auth())));
