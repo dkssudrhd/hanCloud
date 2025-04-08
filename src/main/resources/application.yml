@@ -1,38 +1,27 @@
 spring:
-    application:
-        name: hanCloud
+  application:
+    name: hanCloud
 
-    profiles:
-      active: prod
+  profiles:
+    active: prod
 
-    jpa:
-        open-in-view: false
-        show-sql: true
-        properties:
-          hibernate:
-            format_sql: true
-            use_sql_comments: true
-            highlight_sql: true
-            auto_quote_keyword: true
-            hbm2ddl:
-              auto: validate
 
-    servlet:
-        multipart:
-          enabled: true
-          file-size-threshold: 2KB
-          max-file-size: 200MB
-          max-request-size: 215MB
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
 
 server:
-    port: 9090
-    shutdown: graceful
+  port: 9090
+  shutdown: graceful
 
 logging:
-    level:
-      org.springframework.web.multipart: DEBUG
+  level:
+    org.springframework.web.multipart: DEBUG
 
 springdoc:
-    swagger-ui:
-      url: /docs/openapi-3.0.json
-      path: /docs/swagger
+  swagger-ui:
+    url: /docs/openapi-3.0.json
+    path: /docs/swagger

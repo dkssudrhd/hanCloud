@@ -13,6 +13,7 @@ import com.hancloud.hancloud.member.repository.MemberRepository;
 import com.hancloud.hancloud.storage.dto.entity.HanStorage;
 import com.hancloud.hancloud.storage.dto.enums.StorageAuth;
 import com.hancloud.hancloud.storage.dto.response.MemberPathResponse;
+import com.hancloud.hancloud.storage.exception.FileNotAccessException;
 import com.hancloud.hancloud.storage.exception.FileNotFoundException;
 import com.hancloud.hancloud.storage.repository.HanStorageRepository;
 import com.hancloud.hancloud.storage.service.StorageService;
@@ -29,7 +30,7 @@ public class StorageServiceImpl implements StorageService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public MemberPathResponse canUse(String memberId, String path) {
+	public MemberPathResponse memberCanUse(String memberId, String path) {
 		String bucketPath = path.split("/")[0];
 		HanStorage hanStorage = hanStorageRepository.findByPath(bucketPath).orElseThrow(
 			() -> new FileNotFoundException("파일을 찾을 수 없습니다."));
@@ -43,9 +44,6 @@ public class StorageServiceImpl implements StorageService {
 		Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(
 			() -> new MemberNotFoundException("멤버를 찾을 수 없습니다."));
 
-		if (member.getAuth().equals(MemberAuth.admin)) {
-			log.info("admin");
-		}
 		if (member.getAuth().equals(MemberAuth.admin) || hanStorageRepository.isMemberPathCan(memberId, bucketPath)) {
 			return MemberPathResponse.builder()
 				.nowLogin(true)
@@ -53,9 +51,22 @@ public class StorageServiceImpl implements StorageService {
 				.build();
 		}
 
-		return MemberPathResponse.builder()
-			.nowLogin(true)
-			.auth(hanStorage.getAuth().name())
-			.build();
+		throw new FileNotAccessException("파일에 권한이 없습니다.");
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public MemberPathResponse nonMemberCanUse(String path) {
+		String bucketPath = path.split("/")[0];
+		HanStorage hanStorage = hanStorageRepository.findByPath(bucketPath).orElseThrow(
+			() -> new FileNotFoundException("파일을 찾을 수 없습니다."));
+		if (!StorageAuth.canNonMemberRead(hanStorage.getAuth())) {
+			return MemberPathResponse.builder()
+				.nowLogin(false)
+				.auth(hanStorage.getAuth().name())
+				.build();
+		}
+		throw new FileNotAccessException("파일에 권한이 없습니다.");
+
 	}
 }

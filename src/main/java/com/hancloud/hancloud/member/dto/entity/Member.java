@@ -29,6 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Member {
 	private static final int DEFAULT_COUNT = 50000;
+	private static final boolean DEFAULT_SITUATION = true;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -45,6 +46,8 @@ public class Member {
 	int count = DEFAULT_COUNT;
 
 	MemberAuth auth;
+
+	Boolean situation = DEFAULT_SITUATION;
 
 	@OneToMany(mappedBy = "member")
 	List<ApiMember> apiMemberList = new ArrayList<>();
