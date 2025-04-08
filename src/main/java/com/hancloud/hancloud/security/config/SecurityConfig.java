@@ -4,8 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -21,6 +24,8 @@ import com.hancloud.hancloud.storage.service.StorageService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final ObjectMapper objectMapper;
@@ -42,7 +47,15 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
 		Exception {
 		http.csrf(AbstractHttpConfigurer::disable);
+		http.formLogin(AbstractHttpConfigurer::disable);
+		http.httpBasic(AbstractHttpConfigurer::disable);
+		http.authorizeHttpRequests(
+			authorize -> authorize.anyRequest().permitAll()
+		);
 		http.addFilterBefore(authenticationFilterCustom(), UsernamePasswordAuthenticationFilter.class);
+		http
+			.sessionManagement(session -> session
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();
 	}
 
